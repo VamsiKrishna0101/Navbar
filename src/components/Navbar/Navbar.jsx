@@ -32,6 +32,7 @@ export default function Navbar() {
         setClosing(false);
         setOpen(false);
         setMounted(false);
+        setPanelReady(false);
       }
     };
     el.addEventListener("transitionend", onEnd);
@@ -50,6 +51,7 @@ export default function Navbar() {
   };
 
   const startClose = () => {
+    if (!mounted || closing) return;
     setPanelReady(false);
     setSvcOpen(false);
     setNewsOpen(false);
@@ -57,7 +59,8 @@ export default function Navbar() {
   };
 
   const toggle = () => {
-    if (mounted && (open || closing)) startClose();
+    if (closing) return;
+    if (mounted && open) startClose();
     else startOpen();
   };
 
@@ -69,7 +72,9 @@ export default function Navbar() {
     closing && "overlay-closing",
   ].filter(Boolean).join(" ");
 
-  const buttonLabel = closing ? "menu" : (mounted ? "close" : "menu");
+  const buttonLabel = mounted ? "close" : "menu";
+  const buttonClass =
+    "nav-toggle " + (mounted ? "nav-toggle--close" : "nav-toggle--menu");
 
   return (
     <>
@@ -77,7 +82,7 @@ export default function Navbar() {
         <div className="nav-inner">
           <a href="/" className="nav-logo" aria-label="Home">NW</a>
           <button
-            className="nav-toggle"
+            className={buttonClass}
             onClick={toggle}
             aria-expanded={open}
             aria-controls="nav-overlay"
@@ -98,40 +103,45 @@ export default function Navbar() {
         <button className="overlay-backdrop" onClick={startClose} aria-label="Close" />
 
         <div className="overlay-social">
-          <a href="#" className="icon-box" aria-label="LinkedIn"><FaLinkedinIn size={18} /></a>
-          <a href="#" className="icon-box" aria-label="X"><FaXTwitter size={18} /></a>
-          <a href="#" className="icon-box" aria-label="Instagram"><FaInstagram size={18} /></a>
-          <a href="#" className="icon-box" aria-label="Facebook"><FaFacebookF size={18} /></a>
+          <a href="#" className="icon-box" aria-label="LinkedIn"><FaLinkedinIn /></a>
+          <a href="#" className="icon-box" aria-label="X"><FaXTwitter /></a>
+          <a href="#" className="icon-box" aria-label="Instagram"><FaInstagram /></a>
+          <a href="#" className="icon-box" aria-label="Facebook"><FaFacebookF /></a>
         </div>
+
+        <a href="#" className="overlay-cta">Join our mailing list</a>
 
         <div className="overlay-panel" ref={panelRef}>
           <nav className="overlay-menu">
             <a href="#" className="menu-item">About us</a>
 
             <button
-              className="menu-item menu-btn"
+              className={`menu-item menu-btn ${svcOpen ? "is-open" : ""}`}
               aria-expanded={svcOpen}
               onClick={() => setSvcOpen(v => !v)}
             >
               <span>Services</span>
-              <span className={`chev ${svcOpen ? "chev-open" : ""}`}>▾</span>
+              <span className="chev" aria-hidden>▾</span>
             </button>
             <ul className={`submenu ${svcOpen ? "submenu-open" : ""}`}>
-              <li><a href="#">Brand Strategy</a></li>
-              <li><a href="#">Creative & Content</a></li>
-              <li><a href="#">Sponsorship</a></li>
-              <li><a href="#">Experiential</a></li>
+              <li><a href="#">Rights</a></li>
+              <li><a href="#">Channels</a></li>
+              <li><a href="#">Digital</a></li>
+              <li><a href="#">Global brand partnerships</a></li>
+              <li><a href="#">Event management</a></li>
+              <li><a href="#">Consulting</a></li>
+              <li><a href="#">Studios</a></li>
             </ul>
 
             <a href="#" className="menu-item">Portfolio</a>
 
             <button
-              className="menu-item menu-btn"
+              className={`menu-item menu-btn ${newsOpen ? "is-open" : ""}`}
               aria-expanded={newsOpen}
               onClick={() => setNewsOpen(v => !v)}
             >
               <span>News &amp; insights</span>
-              <span className={`chev ${newsOpen ? "chev-open" : ""}`}>▾</span>
+              <span className="chev" aria-hidden>▾</span>
             </button>
             <ul className={`submenu ${newsOpen ? "submenu-open" : ""}`}>
               <li><a href="#">Latest news</a></li>
@@ -142,8 +152,6 @@ export default function Navbar() {
             <a href="#" className="menu-item">Careers</a>
             <a href="#" className="menu-item">Contact</a>
           </nav>
-
-          <a href="#" className="overlay-cta">Join our mailing list</a>
         </div>
       </div>
     </>
