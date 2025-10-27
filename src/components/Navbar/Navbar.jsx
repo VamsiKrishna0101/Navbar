@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaLinkedinIn, FaInstagram, FaFacebookF } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import "./navbar.css";
+import "./Navbar.css";
 
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
